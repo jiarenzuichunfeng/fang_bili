@@ -1,0 +1,21 @@
+{
+  "name": "fang_bili_interface",
+  "version": "1.0.0",
+  "description": "B站 Mock 接口服务",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "dev": "nodemon main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^3.2.0",
+    "koa-body": "^7.0.1",
+    "koa-router": "^14.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
