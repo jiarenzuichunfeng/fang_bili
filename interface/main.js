@@ -27,7 +27,7 @@ router.get("/test", (ctx) => {
 });
 
 // 获取数据库里的账号
-async function readJson(username) {
+async function getName(username) {
   const jsonStr = await fs.readFile("./db/user.json", "utf8");
   const data = JSON.parse(jsonStr);
   return data[username];
@@ -39,13 +39,11 @@ router.post("/user/login", async (ctx) => {
     const { username, password } = ctx.request.body;
     const header = ctx.request.header;
     const { username: fsusername, password: fspassword } =
-      await readJson(username);
+      await getName(username);
 
-    console.log(ctx.request.body);
-
-    if (header.courseflag == "fa") {
+    if (header['course-flag'] == "fa" && header['auth-token'] == "test-token" ) {
       if (username === fsusername && password === fspassword) {
-        ctx.body = { code: 0, token: "mock-token-123456" };
+        ctx.body = { code: 0, 'boarding-pass': "mock-token-123456" };
       } else {
         ctx.body = { code: -1, msg: "用户名或密码错误" };
       }
@@ -56,20 +54,26 @@ router.post("/user/login", async (ctx) => {
 });
 
 // 往本地数据库写入数据
-async function writeJson(username, password) {
+async function writeJson(username, password,imoocId,orderId) {
   const jsonStr = await fs.readFile("./db/user.json", "utf8");
   const data = JSON.parse(jsonStr);
-  data[username] = { username, password };
+  data[username] = { username, password ,imoocId,orderId};
   fs.writeFile("./db/user.json", JSON.stringify(data, null, 2), "utf8");
 }
 
 // 注册
-router.post("/user/registration", (ctx) => {
-  const { username, password } = ctx.request.body;
+router.post("/user/registration", async (ctx) => {
+  const { username, password,imoocId,orderId } = ctx.request.body;
   const header = ctx.request.header;
+  const {username:fsusername} = await getName(username);
 
-  if (header.courseflag == "fa") {
-    writeJson(username, password);
+  if (header['course-flag'] == "fa") {
+    if (fsusername == username) {
+      ctx.body = { code: -1, msg: "用户名已存在" };
+    }else{
+      writeJson(username, password,imoocId,orderId);
+      ctx.body = { code: 0, msg: "注册成功" };
+    }
   }
 });
 

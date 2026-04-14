@@ -2,5 +2,11 @@
   "admin": {
     "username": "admin",
     "password": "123456"
+  },
+  "text": {
+    "username": "text",
+    "password": "123456",
+    "imoocId": "1234",
+    "orderId": "3456"
   }
 }

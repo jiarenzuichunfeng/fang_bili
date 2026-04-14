@@ -1,4 +1,6 @@
 // 1. 定义请求方法枚举：包含 GET、POST、DELETE 三种常用请求类型
+import 'package:fang_bili/http/dao/login_dao.dart';
+
 enum HttpMethod { GET, POST, DELETE }
 
 // 2. 抽象类：所有网络请求的基类，封装通用请求逻辑
@@ -48,6 +50,15 @@ abstract class BaseRequest {
     } else {
       url = Uri.http(authority(), pathStr, params);
     }
+
+    if (needLogin()) {
+      // 如果需要登录，则从缓存中获取登录令牌，并添加到请求头中
+      var boardingPass = LoginDao.getBoardingPass();
+      if (boardingPass != null) {
+        addHeader("boarding-pass", boardingPass);
+      }
+    }
+
     print("url:${url.toString()}");
 
     return url.toString();
@@ -72,8 +83,10 @@ abstract class BaseRequest {
   }
 
   // 请求头：存储接口请求头参数
-  Map<String, dynamic> header = Map();
-
+  Map<String, dynamic> header = {
+    'course-flag': 'fa',
+    "auth-token": "test-token",
+  };
 
   BaseRequest addHeader(String k, Object v) {
     header[k] = v.toString();
