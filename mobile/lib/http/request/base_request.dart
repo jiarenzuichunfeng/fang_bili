@@ -13,7 +13,8 @@ abstract class BaseRequest {
 
   // 获取请求的主机域名（服务器地址），子类可重写
   String authority() {
-    return '192.168.1.120:3000';
+    // return '192.168.1.120:3000';
+    return '192.168.0.103:3000';
   }
 
   // 抽象方法：由子类实现，指定当前请求的方法类型（GET/POST/DELETE）
@@ -55,7 +56,7 @@ abstract class BaseRequest {
       // 如果需要登录，则从缓存中获取登录令牌，并添加到请求头中
       var boardingPass = LoginDao.getBoardingPass();
       if (boardingPass != null) {
-        addHeader("boarding-pass", boardingPass);
+        addHeader(LoginDao.BOARDING_PASS, boardingPass);
       }
     }
 
@@ -67,14 +68,14 @@ abstract class BaseRequest {
   bool needLogin();
 
   // 请求参数：存储接口传递的键值对参数
-  Map<String, String> params = Map();
+  Map<String, String> params = {};
 
   BaseRequest add(String k, Object v) {
     params[k] = v.toString();
     return this;
   }
 
-  Map<String, String> body = Map();
+  Map<String, String> body = {};
 
   // body
   BaseRequest addBody(String k, Object v) {

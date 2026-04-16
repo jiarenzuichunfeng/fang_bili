@@ -3,6 +3,7 @@ import 'package:fang_bili/db/hi_cacke.dart';
 import 'package:fang_bili/http/cors/hi_error.dart';
 import 'package:fang_bili/http/cors/hi_net.dart';
 import 'package:fang_bili/http/dao/login_dao.dart';
+import 'package:fang_bili/http/request/notice_request.dart';
 import 'package:fang_bili/http/request/test_request.dart';
 import 'package:flutter/material.dart';
 
@@ -38,22 +39,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  final int _counter = 0;
 
   Future<void> _incrementCounter() async {
-    // TestRequest request = TestRequest();
-    // request.add("aa", "ddd").add("bb", "333").add("requestPrams", "kkk");
-    // try {
-    //   var result = await HiNet.getInstance()?.fire(request);
-    //   print(result);
-    // } on NeedAuth catch (e) {
-    //   print(e);
-    // } on NeedLogin catch (e) {
-    //   print(e);
-    // } on HiNetError catch (e) {
-    //   print(e);
-    // }
-    test();
+    testLogin();
+    // testRegistration();
+    // testNotice();
   }
 
   @override
@@ -84,10 +75,32 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void test() async {
+  void testLogin() async {
     try {
       var result = await LoginDao.Login("admin", "123456");
-      // var result = await LoginDao.registration("admin", "123456","4321","9876");
+      print(result);
+    } on NeedAuth catch (e) {
+      print(e);
+    }
+  }
+
+  void testRegistration() async {
+    try {
+      var result = await LoginDao.registration(
+        "admin",
+        "123456",
+        "4321",
+        "9876",
+      );
+      print(result);
+    } on NeedAuth catch (e) {
+      print(e);
+    }
+  }
+
+  void testNotice() async {
+    try {
+      var result = await HiNet.getInstance()?.fire(NoticeRequest());
       print(result);
     } on NeedAuth catch (e) {
       print(e);
