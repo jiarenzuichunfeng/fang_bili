@@ -5,6 +5,8 @@ import 'package:fang_bili/http/cors/hi_net.dart';
 import 'package:fang_bili/http/dao/login_dao.dart';
 import 'package:fang_bili/http/request/notice_request.dart';
 import 'package:fang_bili/http/request/test_request.dart';
+import 'package:fang_bili/page/registration_page.dart';
+import 'package:fang_bili/util/color.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -23,8 +25,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      theme: ThemeData(
+        colorScheme: ColorScheme.light(
+          primary: Colors.white, 
+          onPrimary: Colors.black, 
+        ),
+        useMaterial3: true, 
+        scaffoldBackgroundColor: Colors.white,
+      ),
+      home: RegistrationPage(),
     );
   }
 }
@@ -42,8 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final int _counter = 0;
 
   Future<void> _incrementCounter() async {
-    testLogin();
-    // testRegistration();
+    // testLogin();
+    testRegistration();
     // testNotice();
   }
 
