@@ -73,7 +73,7 @@ router.post("/registration", async (ctx) => {
     const user = await getName(username);
 
     if (user) {
-      ctx.body = { code: -1, msg: "用户名已存在" };
+      ctx.body = { statusCode: -1, msg: "用户名已存在" };
       return;
     }
 

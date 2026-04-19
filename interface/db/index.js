@@ -1,5 +1,18 @@
 const fs = require('fs/promises');
 const path = require('path');
+// const mysql = require('mysql2/promise');
+
+// 创建数据库连接池
+// const connection = mysql.createConnection({
+//   host:'localhost',
+//   user:'root',
+//   password:'wxhn521',
+//   database:'fang_bili',
+//   waitForConnections: true, // 启用排队等待
+//   connectionLimit: 10,  // 最大连接数
+//   queueLimit: 0 // 不限制排队长度
+// })
+
 
 // 关键：固定文件路径（防止路径错误）
 const USER_FILE = path.resolve('./db/user.json');

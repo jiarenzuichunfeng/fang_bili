@@ -1,12 +1,10 @@
-import 'package:dio/dio.dart';
 import 'package:fang_bili/db/hi_cacke.dart';
 import 'package:fang_bili/http/cors/hi_error.dart';
 import 'package:fang_bili/http/cors/hi_net.dart';
 import 'package:fang_bili/http/dao/login_dao.dart';
 import 'package:fang_bili/http/request/notice_request.dart';
-import 'package:fang_bili/http/request/test_request.dart';
+import 'package:fang_bili/page/login_page.dart';
 import 'package:fang_bili/page/registration_page.dart';
-import 'package:fang_bili/util/color.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -27,13 +25,15 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.light(
-          primary: Colors.white, 
-          onPrimary: Colors.black, 
+          primary: Colors.white,
+          onPrimary: Colors.black,
         ),
-        useMaterial3: true, 
+        useMaterial3: true,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: RegistrationPage(),
+      // home: RegistrationPage(onJumpToLogin: () {}),
+      // home: MyHomePage(title: '标题'),
+      home: LoginPage(title: '标题', onJumpToRegistration: () {}),
     );
   }
 }
@@ -94,6 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void testRegistration() async {
+    // 如果出现 返回值为空的情况 ，可能是ip地址变了
     try {
       var result = await LoginDao.registration(
         "admin",

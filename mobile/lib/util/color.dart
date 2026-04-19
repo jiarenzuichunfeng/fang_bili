@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-const MaterialColor white = const MaterialColor(0xFFFFFFFF, const <int, Color>{
+const MaterialColor white = MaterialColor(0xFFFFFFFF, <int, Color>{
   0: Color(0xFFFFFFFF),
   100: Color(0xFFFFFFFF),
   200: Color(0xFFFFFFFF),
@@ -15,6 +15,6 @@ const MaterialColor white = const MaterialColor(0xFFFFFFFF, const <int, Color>{
   900: Color(0xFFFFFFFF),
 });
 
-const MaterialColor primary = const MaterialColor(0xffb7299, const <int, Color>{
-  50: const Color(0xffff9db5),
+const MaterialColor primary = MaterialColor(0xffffb7299, <int, Color>{
+  50: Color(0xffff9db5),
 });
