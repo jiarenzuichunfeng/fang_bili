@@ -1,119 +1,92 @@
-import 'package:fang_bili/db/hi_cacke.dart';
-import 'package:fang_bili/http/cors/hi_error.dart';
-import 'package:fang_bili/http/cors/hi_net.dart';
-import 'package:fang_bili/http/dao/login_dao.dart';
-import 'package:fang_bili/http/request/notice_request.dart';
-import 'package:fang_bili/page/login_page.dart';
-import 'package:fang_bili/page/registration_page.dart';
+import 'package:fang_bili/model/video_model.dart';
+import 'package:fang_bili/page/home_page.dart';
+import 'package:fang_bili/page/video_detail_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const BiliApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class BiliApp extends StatefulWidget {
+  const BiliApp({super.key});
 
   @override
-  void initState() {
-    HiCacke.preInit();
-  }
+  State<BiliApp> createState() => _BiliAppState();
+}
+
+class _BiliAppState extends State<BiliApp> {
+  BiliRouteDelegate _routeDelegate = BiliRouteDelegate();
+  BiliRouteInformationParser _routeInformationParser = BiliRouteInformationParser();
+
 
   @override
   Widget build(BuildContext context) {
+    var widget = Router(routeInformationParser: _routeInformationParser ,routerDelegate: _routeDelegate,routeInformationProvider: PlatformRouteInformationProvider(initialRouteInformation: RouteInformation(location: '/')),);
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.light(
-          primary: Colors.white,
-          onPrimary: Colors.black,
-        ),
-        useMaterial3: true,
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      // home: RegistrationPage(onJumpToLogin: () {}),
-      // home: MyHomePage(title: '标题'),
-      home: LoginPage(title: '标题', onJumpToRegistration: () {}),
+      home: widget,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  final int _counter = 0;
-
-  Future<void> _incrementCounter() async {
-    // testLogin();
-    testRegistration();
-    // testNotice();
-  }
+class BiliRouteDelegate extends RouterDelegate<BiliRoutePath>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<BiliRoutePath> {
+  final GlobalKey<NavigatorState> navigatorKey;
+  BiliRouteDelegate() : navigatorKey = GlobalKey<NavigatorState>();
+  List<MaterialPage> pages = [];
+  VideoModel? videoModel;
+  BiliRoutePath? path;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+    // 构建路由栈
+    pages = [
+      pageWrap(HomePage(onJumpToDetail: (videomodel) { 
+        videoModel = videomodel;
+        notifyListeners();
+      })),
+      if(videoModel != null) pageWrap(VideoDetailPage(videoModel: videoModel!))
+    ];
 
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+    return Navigator(
+      key: navigatorKey,
+      pages: pages,
+      onPopPage: (route, result) {
+        // 在这里可以控制是否返回
+        if (!route.didPop(result)) {
+          return false;
+        }
+        return true;
+      },
     );
   }
 
-  void testLogin() async {
-    try {
-      var result = await LoginDao.Login("admin", "123456");
-      print(result);
-    } on NeedAuth catch (e) {
-      print(e);
-    }
+  @override
+  Future<void> setNewRoutePath(BiliRoutePath path) async {
+    this.path = path;
   }
+}
 
-  void testRegistration() async {
-    // 如果出现 返回值为空的情况 ，可能是ip地址变了
-    try {
-      var result = await LoginDao.registration(
-        "admin",
-        "123456",
-        "4321",
-        "9876",
-      );
-      print(result);
-    } on NeedAuth catch (e) {
-      print(e);
+class BiliRouteInformationParser extends RouteInformationParser<BiliRoutePath> {
+  @override
+  Future<BiliRoutePath> parseRouteInformation(
+    RouteInformation routeInformation,
+  ) async {
+    final uri = Uri.parse(routeInformation.location);
+    if (uri.pathSegments.isEmpty) {
+      return BiliRoutePath.home();
     }
+    return BiliRoutePath.detail();
   }
+}
 
-  void testNotice() async {
-    try {
-      var result = await HiNet.getInstance()?.fire(NoticeRequest());
-      print(result);
-    } on NeedAuth catch (e) {
-      print(e);
-    }
-  }
+// 定义路由数据，path
+class BiliRoutePath {
+  final String location;
+  BiliRoutePath.home() : location = '/';
+  BiliRoutePath.detail() : location = '/detail';
+}
+
+// 创建页面
+pageWrap(Widget child) {
+  return MaterialPage(key: ValueKey(child.hashCode), child: child);
 }
