@@ -1,5 +1,6 @@
 import 'package:fang_bili/http/cors/hi_error.dart';
 import 'package:fang_bili/http/dao/login_dao.dart';
+import 'package:fang_bili/navigator/hi_navigator.dart';
 import 'package:fang_bili/util/string_util.dart';
 import 'package:fang_bili/util/toast.dart';
 import 'package:fang_bili/widget/appbar.dart';
@@ -9,8 +10,7 @@ import 'package:fang_bili/widget/login_input.dart';
 import 'package:flutter/material.dart';
 
 class RegistrationPage extends StatefulWidget {
-  final VoidCallback onJumpToLogin;
-  const RegistrationPage({super.key, required this.onJumpToLogin});
+  const RegistrationPage({super.key});
 
   @override
   State<RegistrationPage> createState() => _RegistrationPageState();
@@ -28,7 +28,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar("注册", "登录", widget.onJumpToLogin),
+      appBar: appBar("注册", "登录", (){
+         HiNavigator.getInstance().onJumpTo(RouteStatus.login);
+      }),
       body: Container(
         child: ListView(
           children: [
@@ -111,9 +113,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       if (result['code'] == 0) {
         print("注册成功");
         showToast("注册成功");
-        if (widget.onJumpToLogin != null) {
-          widget.onJumpToLogin();
-        }
+         HiNavigator.getInstance().onJumpTo(RouteStatus.login);
       } else {
         print(result["msg"]);
         showWarnToast(result['msg']);
