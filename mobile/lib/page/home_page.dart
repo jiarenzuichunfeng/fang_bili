@@ -10,6 +10,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var listener;
+  @override
+  void initState() {
+    super.initState();
+    HiNavigator.getInstance().addListener(this.listener = (current,pre){
+      if(widget == current.page || current.page is HomePage){
+
+      }else if (widget == pre?.page || pre?.page is HomePage) {}
+    });
+  }
+
+  @override
+  void dispose() {
+    HiNavigator.getInstance().addListener(this.listener);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
